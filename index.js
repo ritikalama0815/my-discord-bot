@@ -33,8 +33,17 @@ client.once(Events.ClientReady, readyClient => {
     console.log('Ready! Logged in as ${readyClient.user.tag}'); 
 });
 
+//when interaction is created, run this code
+const wait = require('node:timers/promises').setTimeout;
 client.on(Events.InteractionCreate, async interaction => {
-    if (!interaction.isCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
+
+    if(interaction.commandName === 'ping') {
+       //await interaction.deferReply(); -> use for deferring reply 
+        await interaction.reply('Pong!');
+        await wait(2_000);
+        await interaction.editReply('Pong! (edited)');
+    }
 
     const command = interaction.client.commands.get(interaction.commandName);
 

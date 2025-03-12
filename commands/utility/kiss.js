@@ -6,6 +6,6 @@ module.exports = {
         .setName('kiss')
         .setDescription('k*ss someone'),
     async execute(interaction) {
-        await interaction.reply('muah! 💋.. how lucky');
+        await interaction.reply('muah!💋.. *how lucky*');
     },
 };
