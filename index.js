@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
-const { Client, Collection, Events, GatewayIntentBits, Message } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, Events, Message} = require('discord.js');
 const { token } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -52,6 +52,21 @@ client.on(Events.InteractionCreate, async interaction => {
         await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });}
     }
 }
-);  
+); 
+
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const event =
+        require(filePath);
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+    }
+    else {
+        client.on(event.name, (...args) => event.execute(...args));
+    }
+}
+// Login to Discord with your client's token
 
 client.login(token);
