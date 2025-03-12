@@ -21,27 +21,32 @@ module.exports = {
         const channel = interaction.options.getChannel('channel');
         const embed = interaction.options.getBoolean('embed');
 
-        if (channel) {
-            if (embed) {
-                const embedMessage = {
-                    color: 0x0099ff,
-                    description: input,
-                };
-                await channel.send({ embeds: [embedMessage] });
+        try {
+            if (channel) {
+                if (embed) {
+                    const embedMessage = {
+                        color: 0x0099ff,
+                        description: input,
+                    };
+                    await channel.send({ embeds: [embedMessage] });
+                } else {
+                    await channel.send(input);
+                }
+                await interaction.reply({ content: 'Message sent!', ephemeral: true });
             } else {
-                await channel.send(input);
+                if (embed) {
+                    const embedMessage = {
+                        color: 0x0099ff,
+                        description: input,
+                    };
+                    await interaction.reply({ embeds: [embedMessage] });
+                } else {
+                    await interaction.reply(input);
+                }
             }
-            await interaction.reply({ content: 'Message sent!', ephemeral: true });
-        } else {
-            if (embed) {
-                const embedMessage = {
-                    color: 0x0099ff,
-                    description: input,
-                };
-                await interaction.reply({ embeds: [embedMessage] });
-            } else {
-                await interaction.reply(input);
-            }
+        } catch (error) {
+            console.error('Error sending message:', error);
+            await interaction.reply({ content: 'There was an error while sending the message.', ephemeral: true });
         }
     },
 };
